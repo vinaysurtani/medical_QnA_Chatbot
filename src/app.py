@@ -59,7 +59,7 @@ def stream_from_api(query: str, top_k: int):
         f"{API_URL}/ask/stream",
         json={"query": query, "top_k": top_k},
         stream=True,
-        timeout=60,
+        timeout=120,
     ) as response:
         response.raise_for_status()
         for raw_line in response.iter_lines():
