@@ -1,0 +1,10 @@
+.env
+env/
+__pycache__/
+*.pyc
+.DS_Store
+clinical_notes.csv
+data/sample_20k.csv
+data/sample.csv
+data/paraphrase_eval.csv
+logs/

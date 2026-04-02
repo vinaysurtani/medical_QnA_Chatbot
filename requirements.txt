@@ -1,0 +1,15 @@
+anthropic==0.87.0
+sentence-transformers==5.3.0
+supabase==2.28.3
+fastapi==0.135.2
+uvicorn==0.42.0
+streamlit==1.56.0
+python-dotenv==1.2.2
+pandas==3.0.2
+numpy==2.4.4
+requests==2.33.1
+httpx==0.28.1
+pydantic==2.12.5
+torch==2.11.0
+transformers==5.4.0
+postgrest==2.28.3
