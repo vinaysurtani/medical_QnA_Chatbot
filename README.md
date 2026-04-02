@@ -1,5 +1,9 @@
 # Medical Q&A RAG Pipeline
 
+**Live demo:** https://medicalqnachatbot-zfd4cwbyvbcby4vecrrj2r.streamlit.app/
+
+> First query takes ~30s to cold start. Subsequent queries are fast.
+
 A retrieval-augmented generation (RAG) system that answers clinical questions from patient discharge summaries. Built with sentence-transformers, Supabase pgvector, Claude Haiku, FastAPI, and Streamlit.
 
 ---
