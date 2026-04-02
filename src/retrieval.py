@@ -7,7 +7,6 @@ from Supabase using cosine similarity via pgvector.
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-from sentence_transformers import SentenceTransformer
 from supabase import create_client
 
 load_dotenv(Path(__file__).parent.parent / ".env")
@@ -16,9 +15,10 @@ _model  = None
 _client = None
 
 
-def _get_model() -> SentenceTransformer:
+def _get_model():
     global _model
     if _model is None:
+        from sentence_transformers import SentenceTransformer
         _model = SentenceTransformer("all-MiniLM-L6-v2")
     return _model
 
