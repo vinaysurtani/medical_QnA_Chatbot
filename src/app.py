@@ -1,20 +1,21 @@
 """
 Streamlit chat UI.
-Calls the FastAPI backend instead of generate.py directly.
+Calls stream_answer() directly from generate.py.
 """
 
-import os
-import json
-import requests
-import streamlit as st
+import sys
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent))
 
-API_URL    = os.environ.get("API_URL", "http://localhost:8000")
+import streamlit as st
+from generate import stream_answer
+
 DISCLAIMER = "⚠️ This is not medical advice. Consult a qualified healthcare professional for diagnosis and treatment."
 
 
 def strip_disclaimer(text: str) -> str:
     return text.replace(DISCLAIMER, "").strip()
+
 
 st.set_page_config(
     page_title="Medical Q&A Assistant",
@@ -50,34 +51,6 @@ with st.sidebar:
         st.rerun()
 
 
-def stream_from_api(query: str, top_k: int):
-    """
-    Calls POST /ask/stream and yields text chunks, then a final metadata dict.
-    Mirrors the interface of generate.stream_answer() so app logic is unchanged.
-    """
-    with requests.post(
-        f"{API_URL}/ask/stream",
-        json={"query": query, "top_k": top_k},
-        stream=True,
-        timeout=120,
-    ) as response:
-        response.raise_for_status()
-        for raw_line in response.iter_lines():
-            if not raw_line:
-                continue
-            line = raw_line.decode("utf-8") if isinstance(raw_line, bytes) else raw_line
-            if not line.startswith("data: "):
-                continue
-            payload = line[len("data: "):]
-            if payload == "[DONE]":
-                return
-            data = json.loads(payload)
-            if data["type"] == "text":
-                yield data["content"]
-            elif data["type"] == "meta":
-                yield {k: v for k, v in data.items() if k != "type"}
-
-
 # --- Chat history ---
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -100,7 +73,7 @@ if query := st.chat_input("Ask a clinical question..."):
 
     with st.chat_message("assistant"):
         with st.spinner("Retrieving records..."):
-            gen = stream_from_api(query, top_k=top_k)
+            gen = stream_answer(query, top_k=top_k)
             first = next(gen)
 
         result = None
